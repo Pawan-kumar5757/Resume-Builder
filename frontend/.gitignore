@@ -1,4 +1,6 @@
 node_modules/
 .env
-dist/
-build/
+
+# for safety (nested folders bhi ignore honge)
+**/node_modules/
+**/.env

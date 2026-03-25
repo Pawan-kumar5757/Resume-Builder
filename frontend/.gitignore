@@ -1,24 +1,4 @@
-# node modules
 node_modules/
-
-# logs
-logs
-*.log
-npm-debug.log*
-
-# env files
 .env
-
-# build folders
 dist/
 build/
-
-# OS files
-.DS_Store
-
-# VS Code
-.vscode/
-
-# dependency lock (optional)
-package-lock.json
-yarn.lock

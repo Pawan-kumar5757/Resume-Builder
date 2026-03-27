@@ -20,7 +20,7 @@ const ActionBar = ({ data }) => {
       const { pdfBytes, password } = await generateEncryptedPdf('resume-preview', data.personalInfo);
       setPasswordInfo(password);
       setShowModal(true);
-      
+
       // Delay download slightly to show modal first
       setTimeout(() => {
         downloadPdfBlob(pdfBytes, `${data.personalInfo.fullName.replace(/\s+/g, '_')}_Resume.pdf`);
@@ -41,7 +41,7 @@ const ActionBar = ({ data }) => {
     try {
       setIsProcessing(true);
       const { pdfBase64, password } = await generateEncryptedPdf('resume-preview', data.personalInfo);
-      
+
       const res = await axios.post('/api/email', {
         toEmail: data.personalInfo.email,
         pdfBase64: pdfBase64,
@@ -64,13 +64,13 @@ const ActionBar = ({ data }) => {
     try {
       setIsProcessing(true);
       const { pdfBase64, password } = await generateEncryptedPdf('resume-preview', data.personalInfo);
-      
+
       await axios.post('/api/whatsapp', {
         phone: data.whatsappNumber,
         pdfBase64: pdfBase64,
         password: password
       });
-      
+
       setWhatsappSent(true);
       toast.success('Sent successfully via Mock WhatsApp!');
     } catch (err) {
@@ -84,40 +84,40 @@ const ActionBar = ({ data }) => {
   return (
     <>
       <div className="bg-white/80 backdrop-blur-md p-4 rounded-3xl shadow-sm border border-white flex flex-col sm:flex-row gap-4 items-center justify-between no-print">
-         <div className="flex flex-wrap gap-3 w-full justify-center lg:justify-start">
-            <button 
-              onClick={handlePrint} 
-              disabled={isProcessing}
-              className="flex justify-center items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl transition-all font-semibold text-sm whitespace-nowrap"
+        <div className="flex flex-wrap gap-3 w-full justify-center lg:justify-start">
+          <button
+            onClick={handlePrint}
+            disabled={isProcessing}
+            className="flex justify-center items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl transition-all font-semibold text-sm whitespace-nowrap"
+          >
+            <Printer size={18} /> Print
+          </button>
+          <button
+            onClick={handleDownload}
+            disabled={isProcessing}
+            className="flex justify-center items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-md shadow-blue-500/20 hover:shadow-lg hover:-translate-y-0.5 text-white rounded-xl transition-all font-semibold text-sm whitespace-nowrap"
+          >
+            <Download size={18} /> Download Secured PDF
+          </button>
+          <button
+            onClick={handleEmail}
+            disabled={isProcessing}
+            className="flex justify-center items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 shadow-md shadow-emerald-500/20 hover:shadow-lg hover:-translate-y-0.5 text-white rounded-xl transition-all font-semibold text-sm whitespace-nowrap"
+          >
+            <Mail size={18} /> Email Resume
+          </button>
+          {data.whatsappNumber && (
+            <button
+              onClick={handleWhatsApp}
+              disabled={isProcessing || whatsappSent}
+              className={`flex justify-center items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-semibold text-sm whitespace-nowrap ${whatsappSent ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 shadow-md shadow-green-500/20 hover:shadow-lg hover:-translate-y-0.5 text-white'}`}
             >
-              <Printer size={18} /> Print
+              {whatsappSent ? <CheckCircle size={18} /> : <MessageCircle size={18} />}
+              {whatsappSent ? 'Sent to WA' : 'Send via WhatsApp'}
             </button>
-            <button 
-              onClick={handleDownload} 
-              disabled={isProcessing}
-              className="flex justify-center items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-md shadow-blue-500/20 hover:shadow-lg hover:-translate-y-0.5 text-white rounded-xl transition-all font-semibold text-sm whitespace-nowrap"
-            >
-              <Download size={18} /> Download Secured PDF
-            </button>
-            <button 
-              onClick={handleEmail} 
-              disabled={isProcessing}
-              className="flex justify-center items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 shadow-md shadow-emerald-500/20 hover:shadow-lg hover:-translate-y-0.5 text-white rounded-xl transition-all font-semibold text-sm whitespace-nowrap"
-            >
-              <Mail size={18} /> Email Resume
-            </button>
-            {data.whatsappNumber && (
-              <button 
-                onClick={handleWhatsApp} 
-                disabled={isProcessing || whatsappSent}
-                className={`flex justify-center items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-semibold text-sm whitespace-nowrap ${whatsappSent ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 shadow-md shadow-green-500/20 hover:shadow-lg hover:-translate-y-0.5 text-white'}`}
-              >
-                {whatsappSent ? <CheckCircle size={18} /> : <MessageCircle size={18} />} 
-                {whatsappSent ? 'Sent to WA' : 'Send via WhatsApp'}
-              </button>
-            )}
-         </div>
-         {isProcessing && <div className="text-sm px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-bold animate-pulse whitespace-nowrap">Processing...</div>}
+          )}
+        </div>
+        {isProcessing && <div className="text-sm px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-bold animate-pulse whitespace-nowrap">Processing...</div>}
       </div>
 
       {showModal && (
@@ -136,7 +136,7 @@ const ActionBar = ({ data }) => {
               </div>
             </div>
             <p className="text-xs text-slate-500 font-medium mb-6">You will need this password to open your exported resume file.</p>
-            <button 
+            <button
               onClick={() => setShowModal(false)}
               className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-slate-800/20 active:scale-[0.98]"
             >
